@@ -156,9 +156,9 @@ namespace Kokoa.SkeThrough
             if (mat.HasProperty("_AddDstBlendAlpha"))
                 mat.SetFloat("_AddDstBlendAlpha", 1); // One
 
-            // ZWrite / ZTest
+            // ZWrite=1 で深度書き込みを維持（メッシュ重なりの黒化を防止）
             if (mat.HasProperty("_ZWrite"))
-                mat.SetFloat("_ZWrite", 0);
+                mat.SetFloat("_ZWrite", 1);
             if (mat.HasProperty("_ZTest"))
                 mat.SetFloat("_ZTest", 4);          // LessEqual
 
@@ -169,9 +169,15 @@ namespace Kokoa.SkeThrough
                 mat.SetFloat("_AlphaPremultiply", 0);
             if (mat.HasProperty("_AlphaToCoverage"))
                 mat.SetFloat("_AlphaToCoverage", 0);
-            // これが 1 だとアルファが強制的に 1 にされる
+            // これが 1 だとシェーダー内で alpha が強制的に 1 にされる
             if (mat.HasProperty("_AlphaForceOpaque"))
                 mat.SetFloat("_AlphaForceOpaque", 0);
+            // AlphaMask のブレンドを Off にして意図しない透明を防止
+            if (mat.HasProperty("_MainAlphaMaskMode"))
+                mat.SetFloat("_MainAlphaMaskMode", 0);
+            // AlphaMod を 0 にリセット
+            if (mat.HasProperty("_AlphaMod"))
+                mat.SetFloat("_AlphaMod", 0);
 
             // Outline ブレンド
             if (mat.HasProperty("_OutlineSrcBlend"))
