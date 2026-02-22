@@ -125,16 +125,67 @@ namespace Kokoa.SkeThrough
 
         private static void ApplyPoiyomi(Material mat, float alpha)
         {
+            // Rendering Preset: Fade (2)
+            if (mat.HasProperty("_Mode"))
+                mat.SetFloat("_Mode", 2);
+
             mat.SetOverrideTag("RenderType", "Transparent");
-
-            if (mat.HasProperty("_SrcBlend"))
-                mat.SetInt("_SrcBlend", (int)BlendMode.SrcAlpha);
-            if (mat.HasProperty("_DstBlend"))
-                mat.SetInt("_DstBlend", (int)BlendMode.OneMinusSrcAlpha);
-            if (mat.HasProperty("_ZWrite"))
-                mat.SetInt("_ZWrite", 0);
-
             mat.renderQueue = 3000;
+
+            // メインパス: Blend SrcAlpha OneMinusSrcAlpha
+            if (mat.HasProperty("_BlendOp"))
+                mat.SetFloat("_BlendOp", 0);      // Add
+            if (mat.HasProperty("_BlendOpAlpha"))
+                mat.SetFloat("_BlendOpAlpha", 4);  // Max
+            if (mat.HasProperty("_SrcBlend"))
+                mat.SetFloat("_SrcBlend", 5);      // SrcAlpha
+            if (mat.HasProperty("_DstBlend"))
+                mat.SetFloat("_DstBlend", 10);     // OneMinusSrcAlpha
+            if (mat.HasProperty("_SrcBlendAlpha"))
+                mat.SetFloat("_SrcBlendAlpha", 1);  // One
+            if (mat.HasProperty("_DstBlendAlpha"))
+                mat.SetFloat("_DstBlendAlpha", 1);  // One
+
+            // ForwardAdd パス
+            if (mat.HasProperty("_AddSrcBlend"))
+                mat.SetFloat("_AddSrcBlend", 5);    // SrcAlpha
+            if (mat.HasProperty("_AddDstBlend"))
+                mat.SetFloat("_AddDstBlend", 1);    // One
+            if (mat.HasProperty("_AddSrcBlendAlpha"))
+                mat.SetFloat("_AddSrcBlendAlpha", 0); // Zero
+            if (mat.HasProperty("_AddDstBlendAlpha"))
+                mat.SetFloat("_AddDstBlendAlpha", 1); // One
+
+            // ZWrite / ZTest
+            if (mat.HasProperty("_ZWrite"))
+                mat.SetFloat("_ZWrite", 0);
+            if (mat.HasProperty("_ZTest"))
+                mat.SetFloat("_ZTest", 4);          // LessEqual
+
+            // Alpha 関連
+            if (mat.HasProperty("_Cutoff"))
+                mat.SetFloat("_Cutoff", 0);
+            if (mat.HasProperty("_AlphaPremultiply"))
+                mat.SetFloat("_AlphaPremultiply", 0);
+            if (mat.HasProperty("_AlphaToCoverage"))
+                mat.SetFloat("_AlphaToCoverage", 0);
+            // これが 1 だとアルファが強制的に 1 にされる
+            if (mat.HasProperty("_AlphaForceOpaque"))
+                mat.SetFloat("_AlphaForceOpaque", 0);
+
+            // Outline ブレンド
+            if (mat.HasProperty("_OutlineSrcBlend"))
+                mat.SetFloat("_OutlineSrcBlend", 5);
+            if (mat.HasProperty("_OutlineDstBlend"))
+                mat.SetFloat("_OutlineDstBlend", 10);
+            if (mat.HasProperty("_OutlineSrcBlendAlpha"))
+                mat.SetFloat("_OutlineSrcBlendAlpha", 1);
+            if (mat.HasProperty("_OutlineDstBlendAlpha"))
+                mat.SetFloat("_OutlineDstBlendAlpha", 1);
+            if (mat.HasProperty("_OutlineBlendOp"))
+                mat.SetFloat("_OutlineBlendOp", 0);
+            if (mat.HasProperty("_OutlineBlendOpAlpha"))
+                mat.SetFloat("_OutlineBlendOpAlpha", 4);
 
             SetColorAlpha(mat, "_Color", alpha);
         }
