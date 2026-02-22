@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -5,10 +6,16 @@ namespace Kokoa.SkeThrough
 {
     internal static class MaterialTransparencyHelper
     {
+        // 元テクスチャの InstanceID → alpha=1 コピーのキャッシュ
+        private static readonly Dictionary<int, Texture2D> _opaqueAlphaCache = new();
+
         public static Material CreateTransparentCopy(Material source, float alpha)
         {
             var mat = new Material(source);
             mat.name = source.name + "_SkeThrough";
+
+            // メインテクスチャの alpha をすべて 1.0 に強制（キャッシュから取得）
+            ReplaceMainTexWithOpaqueAlpha(mat, "_MainTex");
 
             string shaderName = mat.shader.name;
 
@@ -171,6 +178,47 @@ namespace Kokoa.SkeThrough
                 color.a = alpha;
                 mat.SetColor(property, color);
             }
+        }
+
+        private static void ReplaceMainTexWithOpaqueAlpha(Material mat, string property)
+        {
+            if (!mat.HasProperty(property)) return;
+            var tex = mat.GetTexture(property);
+            if (tex == null) return;
+
+            int id = tex.GetInstanceID();
+            if (!_opaqueAlphaCache.TryGetValue(id, out var cached) || cached == null)
+            {
+                cached = CreateOpaqueAlphaCopy(tex);
+                _opaqueAlphaCache[id] = cached;
+            }
+            mat.SetTexture(property, cached);
+        }
+
+        private static Texture2D CreateOpaqueAlphaCopy(Texture tex)
+        {
+            var rt = RenderTexture.GetTemporary(tex.width, tex.height, 0, RenderTextureFormat.ARGB32);
+            Graphics.Blit(tex, rt);
+
+            var prev = RenderTexture.active;
+            RenderTexture.active = rt;
+
+            var copy = new Texture2D(tex.width, tex.height, TextureFormat.RGBA32, false);
+            copy.ReadPixels(new Rect(0, 0, tex.width, tex.height), 0, 0);
+
+            RenderTexture.active = prev;
+            RenderTexture.ReleaseTemporary(rt);
+
+            var pixels = copy.GetPixels32();
+            for (int i = 0; i < pixels.Length; i++)
+            {
+                pixels[i].a = 255;
+            }
+            copy.SetPixels32(pixels);
+            copy.Apply();
+
+            copy.name = tex.name + "_OpaqueAlpha";
+            return copy;
         }
     }
 }

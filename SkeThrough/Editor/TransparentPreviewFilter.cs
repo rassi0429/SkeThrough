@@ -89,9 +89,7 @@ namespace Kokoa.SkeThrough
                     foreach (var mat in _materials)
                     {
                         if (mat != null)
-                        {
                             Object.DestroyImmediate(mat);
-                        }
                     }
                     _materials = null;
                 }
