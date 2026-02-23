@@ -18,6 +18,8 @@ namespace Kokoa.SkeThrough
 
         private static void OnHierarchyGUI(int instanceID, Rect selectionRect)
         {
+            if (SkeThroughSettings.CurrentMode != DisplayMode.AlwaysShow) return;
+
             var obj = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
             if (obj == null) return;
 
