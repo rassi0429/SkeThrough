@@ -5,44 +5,57 @@ namespace Kokoa.SkeThrough
 {
     internal static class SkeThroughContextMenu
     {
-        private const string MenuPath = "GameObject/SkeThrough";
+        private const string OffPath = "GameObject/SkeThrough";
+        private const string OnPath = "GameObject/SkeThrough \u2714";
 
-        [MenuItem(MenuPath, false, 20)]
-        private static void ToggleSkeThrough()
+        [MenuItem(OffPath, false, 20)]
+        private static void EnableSkeThrough()
+        {
+            foreach (var obj in Selection.gameObjects)
+            {
+                if (obj.GetComponent<TransparentPreview>() == null)
+                    Undo.AddComponent<TransparentPreview>(obj);
+            }
+        }
+
+        [MenuItem(OffPath, true)]
+        private static bool ValidateOff()
+        {
+            if (SkeThroughSettings.CurrentMode != DisplayMode.ContextMenu) return false;
+            if (Selection.gameObjects.Length == 0) return false;
+
+            foreach (var obj in Selection.gameObjects)
+            {
+                if (obj.GetComponent<TransparentPreview>() != null) return false;
+                if (obj.GetComponentInChildren<Renderer>(true) != null) return true;
+            }
+
+            return false;
+        }
+
+        [MenuItem(OnPath, false, 20)]
+        private static void DisableSkeThrough()
         {
             foreach (var obj in Selection.gameObjects)
             {
                 var preview = obj.GetComponent<TransparentPreview>();
                 if (preview != null)
                     Undo.DestroyObjectImmediate(preview);
-                else
-                    Undo.AddComponent<TransparentPreview>(obj);
             }
         }
 
-        [MenuItem(MenuPath, true)]
-        private static bool ValidateToggle()
+        [MenuItem(OnPath, true)]
+        private static bool ValidateOn()
         {
             if (SkeThroughSettings.CurrentMode != DisplayMode.ContextMenu) return false;
             if (Selection.gameObjects.Length == 0) return false;
 
-            bool show = false;
-            bool isOn = false;
-
             foreach (var obj in Selection.gameObjects)
             {
-                if (obj.GetComponent<TransparentPreview>() != null)
-                {
-                    show = true;
-                    isOn = true;
-                    break;
-                }
-                if (obj.GetComponentInChildren<Renderer>(true) != null)
-                    show = true;
+                if (obj.GetComponent<TransparentPreview>() != null) return true;
             }
 
-            Menu.SetChecked(MenuPath, isOn);
-            return show;
+            return false;
         }
     }
 }

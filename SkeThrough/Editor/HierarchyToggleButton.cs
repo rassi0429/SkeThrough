@@ -12,8 +12,8 @@ namespace Kokoa.SkeThrough
         static HierarchyToggleButton()
         {
             EditorApplication.hierarchyWindowItemOnGUI += OnHierarchyGUI;
-            _activeIcon = EditorGUIUtility.IconContent("d_VisibilityOn");
-            _inactiveIcon = EditorGUIUtility.IconContent("d_VisibilityOff");
+            _activeIcon = EditorGUIUtility.IconContent("Occlusion");
+            _inactiveIcon = EditorGUIUtility.IconContent("Occlusion");
         }
 
         private static void OnHierarchyGUI(int instanceID, Rect selectionRect)
