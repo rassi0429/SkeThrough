@@ -16,12 +16,11 @@ namespace Kokoa.SkeThrough
 
             foreach (var preview in allPreviews)
             {
-                context.Observe(preview, p => p.alpha);
-
                 var renderers = preview.GetComponentsInChildren<Renderer>(true);
                 foreach (var renderer in renderers)
                 {
-                    if (renderer != null)
+                    if (renderer == null) continue;
+                    if (renderer is SkinnedMeshRenderer || renderer is MeshRenderer)
                     {
                         result.Add(RenderGroup.For(renderer));
                     }
