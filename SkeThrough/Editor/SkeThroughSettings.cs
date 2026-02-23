@@ -130,38 +130,61 @@ namespace Kokoa.SkeThrough
         {
             bool isSelected = current == cardMode;
 
-            EditorGUILayout.BeginHorizontal();
-
-            var originalBg = GUI.backgroundColor;
-            if (isSelected)
-                GUI.backgroundColor = new Color(0.4f, 0.7f, 1f, 1f);
-
-            var buttonStyle = new GUIStyle(GUI.skin.button)
+            var cardStyle = new GUIStyle("HelpBox")
             {
-                fontStyle = FontStyle.Bold,
-                fixedHeight = 24
+                padding = new RectOffset(8, 8, 8, 8),
+                margin = new RectOffset(0, 0, 0, 0)
             };
 
-            if (GUILayout.Button(isSelected ? $"\u2714 {label}" : label, buttonStyle))
+            EditorGUILayout.BeginVertical(cardStyle);
+
+            var newValue = EditorGUILayout.ToggleLeft(label, isSelected, EditorStyles.boldLabel);
+            if (newValue != isSelected && newValue)
+            {
+                SkeThroughSettings.CurrentMode = cardMode;
+                EditorApplication.RepaintHierarchyWindow();
+            }
+
+            EditorGUILayout.LabelField(description, EditorStyles.wordWrappedMiniLabel);
+
+            if (image != null)
+            {
+                GUILayout.Space(4);
+                var rect = GUILayoutUtility.GetAspectRect((float)image.width / image.height);
+                GUI.DrawTexture(rect, image, ScaleMode.ScaleToFit);
+            }
+
+            EditorGUILayout.EndVertical();
+
+            // カード全体をクリック可能にする
+            var totalRect = GUILayoutUtility.GetLastRect();
+            if (Event.current.type == EventType.MouseDown && totalRect.Contains(Event.current.mousePosition))
             {
                 if (!isSelected)
                 {
                     SkeThroughSettings.CurrentMode = cardMode;
                     EditorApplication.RepaintHierarchyWindow();
                 }
+                Event.current.Use();
             }
 
-            GUI.backgroundColor = originalBg;
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.HelpBox(description, MessageType.Info);
-
-            if (image != null)
+            // 選択中の枠線
+            if (isSelected)
             {
-                GUILayout.Space(2);
-                var rect = GUILayoutUtility.GetAspectRect((float)image.width / image.height);
-                GUI.DrawTexture(rect, image, ScaleMode.ScaleToFit);
+                var borderColor = new Color(0.4f, 0.7f, 1f, 0.8f);
+                DrawBorder(totalRect, borderColor, 2f);
             }
+        }
+
+        private static void DrawBorder(Rect rect, Color color, float thickness)
+        {
+            var prev = GUI.color;
+            GUI.color = color;
+            GUI.DrawTexture(new Rect(rect.x, rect.y, rect.width, thickness), EditorGUIUtility.whiteTexture);
+            GUI.DrawTexture(new Rect(rect.x, rect.yMax - thickness, rect.width, thickness), EditorGUIUtility.whiteTexture);
+            GUI.DrawTexture(new Rect(rect.x, rect.y, thickness, rect.height), EditorGUIUtility.whiteTexture);
+            GUI.DrawTexture(new Rect(rect.xMax - thickness, rect.y, thickness, rect.height), EditorGUIUtility.whiteTexture);
+            GUI.color = prev;
         }
     }
 }
