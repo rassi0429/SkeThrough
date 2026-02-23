@@ -38,7 +38,7 @@ namespace Kokoa.SkeThrough
         private static GUIStyle _versionStyle;
         private static GUIStyle _boxStyle;
 
-        [MenuItem("Tools/SkeThrough/Settings")]
+        [MenuItem("Tools/SkeThrough")]
         private static void Open()
         {
             var window = GetWindow<SkeThroughSettingsWindow>("SkeThrough Settings");
