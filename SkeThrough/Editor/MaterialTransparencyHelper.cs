@@ -112,6 +112,10 @@ namespace Kokoa.SkeThrough
             if (mat.HasProperty("_BlendOpAlphaFA"))
                 mat.SetInt("_BlendOpAlphaFA", (int)BlendOp.Max);
 
+            // アルファマスクを無効化（0=Off, 1=Replace, 2=Multiply, 3=Add, 4=Subtract）
+            if (mat.HasProperty("_AlphaMaskMode"))
+                mat.SetInt("_AlphaMaskMode", 0);
+
             // アウトライン
             if (mat.HasProperty("_OutlineSrcBlend"))
             {
