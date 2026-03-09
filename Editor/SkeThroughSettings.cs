@@ -27,8 +27,7 @@ namespace Kokoa.SkeThrough
 
     internal class SkeThroughSettingsWindow : EditorWindow
     {
-        private const string Version = "0.1.0";
-        private const string ImageDir = "Assets/kokoa/SkeThrough/Assets";
+        private const string Version = "1.0.0";
 
         private Texture2D _buttonImage;
         private Texture2D _contextImage;
@@ -53,8 +52,8 @@ namespace Kokoa.SkeThrough
 
         private void OnEnable()
         {
-            _buttonImage = AssetDatabase.LoadAssetAtPath<Texture2D>($"{ImageDir}/description_button.png");
-            _contextImage = AssetDatabase.LoadAssetAtPath<Texture2D>($"{ImageDir}/description_context.png");
+            _buttonImage = Resources.Load<Texture2D>("description_button");
+            _contextImage = Resources.Load<Texture2D>("description_context");
             _selectedBg = null;
             _normalBg = null;
         }
