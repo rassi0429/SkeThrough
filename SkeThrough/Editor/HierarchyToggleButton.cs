@@ -28,19 +28,21 @@ namespace Kokoa.SkeThrough
             // 子孫に Renderer を持つか、既に TransparentPreview が付いているオブジェクトのみ表示
             if (preview == null && obj.GetComponentInChildren<Renderer>(true) == null) return;
 
+            var offset = SkeThroughSettings.ButtonOffsetFromRight;
             var buttonRect = new Rect(selectionRect)
             {
-                x = selectionRect.xMax - 20,
+                x = selectionRect.xMax - offset,
                 width = 20
             };
 
             var originalColor = GUI.color;
             bool hasPreview = preview != null;
 
+            var inactiveAlpha = SkeThroughSettings.InactiveButtonAlpha;
             var icon = hasPreview ? _activeIcon : _inactiveIcon;
             GUI.color = hasPreview
                 ? new Color(0.5f, 0.8f, 1f, 1f)
-                : new Color(0.5f, 0.5f, 0.5f, 0.3f);
+                : new Color(0.5f, 0.5f, 0.5f, inactiveAlpha);
 
             var newState = GUI.Toggle(buttonRect, hasPreview, icon, GUI.skin.button);
             GUI.color = originalColor;
