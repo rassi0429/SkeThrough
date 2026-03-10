@@ -9,7 +9,7 @@ namespace Kokoa.SkeThrough
         // 元テクスチャの InstanceID → alpha=1 コピーのキャッシュ
         private static readonly Dictionary<int, Texture2D> _opaqueAlphaCache = new();
 
-        public static Material CreateTransparentCopy(Material source, float alpha)
+        public static Material CreateTransparentCopy(Material source, float alpha, int renderQueueOverride = -1)
         {
             var mat = new Material(source);
             mat.name = source.name + "_SkeThrough";
@@ -35,6 +35,10 @@ namespace Kokoa.SkeThrough
             {
                 ApplyFallback(mat, alpha);
             }
+
+            // コンポーネントで指定された renderQueue で上書き
+            if (renderQueueOverride >= 0)
+                mat.renderQueue = renderQueueOverride;
 
             return mat;
         }
@@ -77,7 +81,7 @@ namespace Kokoa.SkeThrough
             }
 
             mat.SetOverrideTag("RenderType", "TransparentCutout");
-            mat.renderQueue = 2460;
+            mat.renderQueue = 3000;
 
             // Cutoff を 0 にして discard を無効化（0.5 以下で消える問題の対策）
             if (mat.HasProperty("_Cutoff"))

@@ -9,5 +9,8 @@ namespace Kokoa.SkeThrough
     {
         [Range(0f, 1f)]
         public float alpha = 0.5f;
+
+        [Tooltip("RenderQueue を上書きする (-1 で元マテリアルの値を維持)")]
+        public int renderQueueOverride = -1;
     }
 }

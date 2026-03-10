@@ -39,7 +39,7 @@ namespace Kokoa.SkeThrough
 
             var preview = targetRenderer.GetComponentInParent<TransparentPreview>();
 
-            context.Observe(preview, p => p.alpha);
+            context.Observe(preview, p => (p.alpha, p.renderQueueOverride));
 
             var proxyPair = proxyPairs.First();
             var proxyRenderer = proxyPair.Item2;
@@ -52,7 +52,7 @@ namespace Kokoa.SkeThrough
                 if (originalMaterials[i] != null)
                 {
                     transparentMaterials[i] = MaterialTransparencyHelper.CreateTransparentCopy(
-                        originalMaterials[i], preview.alpha);
+                        originalMaterials[i], preview.alpha, preview.renderQueueOverride);
                 }
             }
 
