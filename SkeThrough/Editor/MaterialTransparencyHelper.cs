@@ -46,9 +46,14 @@ namespace Kokoa.SkeThrough
 
             if (isMulti)
             {
-                // Multi シェーダー: プロパティで切り替え
+                // Multi シェーダー: プロパティ + キーワードで切り替え
                 if (mat.HasProperty("_TransparentMode"))
                     mat.SetFloat("_TransparentMode", 2f);
+
+                // Multi はキーワードで LIL_RENDER を決定する（これがないと描画が切り替わらない）
+                mat.EnableKeyword("UNITY_UI_CLIP_RECT");    // LIL_RENDER 2 (Transparent)
+                mat.DisableKeyword("UNITY_UI_ALPHACLIP");   // LIL_RENDER 1 (Cutout) を無効化
+                mat.DisableKeyword("ETC1_EXTERNAL_ALPHA");  // Dither Cutout を無効化
             }
             else
             {
@@ -73,6 +78,10 @@ namespace Kokoa.SkeThrough
 
             mat.SetOverrideTag("RenderType", "TransparentCutout");
             mat.renderQueue = 2460;
+
+            // Cutoff を 0 にして discard を無効化（0.5 以下で消える問題の対策）
+            if (mat.HasProperty("_Cutoff"))
+                mat.SetFloat("_Cutoff", 0f);
 
             // Premultiplied Alpha ブレンド (lilToon公式と同じ)
             if (mat.HasProperty("_SrcBlend"))
