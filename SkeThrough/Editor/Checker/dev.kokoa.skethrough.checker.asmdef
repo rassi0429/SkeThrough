@@ -1,10 +1,6 @@
 {
-    "name": "dev.kokoa.skethrough.editor",
-    "references": [
-        "dev.kokoa.skethrough.runtime",
-        "nadena.dev.ndmf",
-        "nadena.dev.ndmf.runtime"
-    ],
+    "name": "dev.kokoa.skethrough.checker",
+    "references": [],
     "includePlatforms": [
         "Editor"
     ],
@@ -13,9 +9,7 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [
-        "SKETHROUGH_HAS_NDMF"
-    ],
+    "defineConstraints": [],
     "versionDefines": [
         {
             "name": "nadena.dev.ndmf",
