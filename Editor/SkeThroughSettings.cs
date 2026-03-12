@@ -13,6 +13,8 @@ namespace Kokoa.SkeThrough
     internal class SkeThroughSettings : ScriptableSingleton<SkeThroughSettings>
     {
         [SerializeField] private DisplayMode displayMode = DisplayMode.AlwaysShow;
+        [SerializeField] private int buttonOffsetFromRight = 20;
+        [SerializeField] private float inactiveButtonAlpha = 0.3f;
 
         internal static DisplayMode CurrentMode
         {
@@ -20,6 +22,26 @@ namespace Kokoa.SkeThrough
             set
             {
                 instance.displayMode = value;
+                instance.Save(true);
+            }
+        }
+
+        internal static int ButtonOffsetFromRight
+        {
+            get => instance.buttonOffsetFromRight;
+            set
+            {
+                instance.buttonOffsetFromRight = value;
+                instance.Save(true);
+            }
+        }
+
+        internal static float InactiveButtonAlpha
+        {
+            get => instance.inactiveButtonAlpha;
+            set
+            {
+                instance.inactiveButtonAlpha = value;
                 instance.Save(true);
             }
         }
@@ -150,6 +172,29 @@ namespace Kokoa.SkeThrough
 
             DrawCard("Context Menu", "Hierarchy\u306e\u53f3\u30af\u30ea\u30c3\u30af\u30e1\u30cb\u30e5\u30fc\u304b\u3089\u5207\u66ff",
                 DisplayMode.ContextMenu, _contextImage, mode, false);
+
+            // Button Settings (AlwaysShow モード時のみ)
+            if (mode == DisplayMode.AlwaysShow)
+            {
+                GUILayout.Space(16);
+                GUILayout.Label("BUTTON SETTINGS", _sectionLabelStyle);
+                GUILayout.Space(4);
+
+                EditorGUI.BeginChangeCheck();
+
+                var offset = EditorGUILayout.IntSlider(
+                    "右端からの距離", SkeThroughSettings.ButtonOffsetFromRight, 0, 200);
+
+                var alpha = EditorGUILayout.Slider(
+                    "非アクティブの透明度", SkeThroughSettings.InactiveButtonAlpha, 0.05f, 1f);
+
+                if (EditorGUI.EndChangeCheck())
+                {
+                    SkeThroughSettings.ButtonOffsetFromRight = offset;
+                    SkeThroughSettings.InactiveButtonAlpha = alpha;
+                    EditorApplication.RepaintHierarchyWindow();
+                }
+            }
 
             GUILayout.Space(20);
 
