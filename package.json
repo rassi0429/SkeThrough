@@ -1,0 +1,16 @@
+{
+    "name": "dev.kokoa.skethrough",
+    "version": "1.0.0",
+    "displayName": "kokoa's Skethrough",
+    "description": "A tool that can make anything transparent.",
+    "unity": "2022.3",
+    "author": {
+        "name": "kokoa",
+        "url": "https://github.com/rassi0429"
+    },
+    "license": "MIT",
+    "licenseUrl": "",
+    "vpmDependencies": {
+        "nadena.dev.ndmf": ">=1.5.0"
+    }
+}
